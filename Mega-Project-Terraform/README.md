@@ -64,7 +64,7 @@ Creates a route table directing all outbound traffic to the Internet Gateway.
 }
 ```
 Associates each subnet with the route table so that resources in these subnets can access the internet.
-
+----------------------------
 
 **Security**
 
@@ -113,7 +113,7 @@ resource "aws_security_group" "capproject_node_sg" {
 }
 ```
 Allows all inbound and outbound traffic to/from worker nodes.
-
+----------------------------
 **EKS Cluster**
 ```
 resource "aws_eks_cluster" "capproject" {
@@ -163,14 +163,14 @@ resource "aws_eks_node_group" "capproject" {
 ```
 
 Defines three worker nodes in the cluster using EC2 instances (t2.medium). Enables SSH access using an existing key pair.
-
+----------------------------------------
 **IAM Roles & Policies**
 
 Cluster Role – Grants EKS control plane the required permissions.
 
 Node Group Role – Grants worker nodes access to EKS, networking, ECR, and EBS.
 
-
+--------------------------------------
 **Outputs**
 
 These output variables help retrieve important IDs after deployment:
