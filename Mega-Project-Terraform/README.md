@@ -180,6 +180,7 @@ Node Group ID
 VPC ID
 Subnet IDs
 
+----------------------------
 
 **EKS Terraform Flow Diagram**
 
@@ -194,13 +195,5 @@ Subnet IDs
     H --> I[Output Cluster Endpoint & Security Group ID]
     I --> J[Use kubectl to Access Cluster]
 
-
-
-
-<img src="https://sdmntprnorthcentralus.oaiusercontent.com/files/00000000-fbec-622f-8f2c-7c1ed5752178/raw?se=2025-08-10T08%3A43%3A24Z&amp;sp=r&amp;sv=2024-08-04&amp;sr=b&amp;scid=056bfb37-d0ba-5c55-b4a7-41eea1dec7c7&amp;skoid=9ccea605-1409-4478-82eb-9c83b25dc1b0&amp;sktid=a48cca56-e6da-484e-a814-9c849652bcb3&amp;skt=2025-08-10T06%3A22%3A59Z&amp;ske=2025-08-11T06%3A22%3A59Z&amp;sks=b&amp;skv=2024-08-04&amp;sig=jupkNmg3/hMgkzqHbwBK/920noWNmjX7zgN2wVE4BoY%3D"/>
-
-
-
-
-
+--------------------------
 <img width="1024" height="1536" alt="image" src="https://github.com/user-attachments/assets/8312ab80-0b39-4a7f-9abf-73f808415826" />
