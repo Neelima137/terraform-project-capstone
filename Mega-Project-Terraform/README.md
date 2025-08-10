@@ -185,10 +185,8 @@ Node Group ID
 VPC ID
 Subnet IDs
 
-----------------------------
-
 **EKS Terraform Flow Diagram**
-
+-----------------------------
 
     A[Start Terraform Apply] --> B[Configure AWS Provider]
     B --> C[Create VPC using VPC Module]
@@ -200,5 +198,5 @@ Subnet IDs
     H --> I[Output Cluster Endpoint & Security Group ID]
     I --> J[Use kubectl to Access Cluster]
 
---------------------------
+
 <img width="1024" height="1536" alt="image" src="https://github.com/user-attachments/assets/8312ab80-0b39-4a7f-9abf-73f808415826" />
