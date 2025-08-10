@@ -1,17 +1,18 @@
-Networking Layer
-1. VPC
-`
-resource "aws_vpc" "capproject_vpc" {
+**Networking Layer**
+
+**1. VPC**
+```resource "aws_vpc" "capproject_vpc" {
     cidr_block = "10.0.0.0/16"
 
   tags = {
     Name = "capproject-vpc"
   }
 }
-`
+```
 Creates a Virtual Private Cloud to isolate all EKS resources. CIDR block 10.0.0.0/16 allows ~65,536 private IPs.
 
-2. Subnets
+**2. Subnets**
+```
 resource "aws_subnet" "capproject_subnet" {
   count = 2
   vpc_id                  = aws_vpc.capproject_vpc.id
@@ -23,18 +24,22 @@ resource "aws_subnet" "capproject_subnet" {
     Name = "capproject-subnet-${count.index}"
   }
 }
+```
 Creates two subnets in separate Availability Zones (ap-south-1a and ap-south-1b) for high availability. Public IP mapping is enabled so EC2 nodes can be accessed over the internet.
 
-3. Internet Gateway & Route Table
-
-   resource "aws_internet_gateway" "capproject_igw" {
+**3. Internet Gateway & Route Table**
+```
+resource "aws_internet_gateway" "capproject_igw" {
   vpc_id = aws_vpc.capproject_vpc.id
 
   tags = {
     Name = "capproject-igw"
   }
 }
+```
 An Internet Gateway allows resources in public subnets to reach the internet.
+
+```
 resource "aws_route_table" "capproject_route_table" {
   vpc_id = aws_vpc.capproject_vpc.id
 
@@ -47,19 +52,24 @@ resource "aws_route_table" "capproject_route_table" {
     Name = "capproject-route-table"
   }
 }
+```
 Creates a route table directing all outbound traffic to the Internet Gateway.
 
-4. Route Table Association
+**4. Route Table Association**
+```
    resource "aws_route_table_association" "capproject_association" {
   count          = 2
   subnet_id      = aws_subnet.capproject_subnet[count.index].id
   route_table_id = aws_route_table.capproject_route_table.id
 }
+```
 Associates each subnet with the route table so that resources in these subnets can access the internet.
 
 
-Security
-Cluster Security Group
+**Security**
+
+**Cluster Security Group**
+```
 resource "aws_security_group" "capproject_cluster_sg" {
   vpc_id = aws_vpc.capproject_vpc.id
 
@@ -74,8 +84,12 @@ resource "aws_security_group" "capproject_cluster_sg" {
     Name = "capproject-cluster-sg"
   }
 }
+```
+
 Allows all outbound traffic from the EKS control plane.
-Node Security Group
+
+**Node Security Group**
+```
 resource "aws_security_group" "capproject_node_sg" {
   vpc_id = aws_vpc.capproject_vpc.id
 
@@ -97,9 +111,11 @@ resource "aws_security_group" "capproject_node_sg" {
     Name = "capproject-node-sg"
   }
 }
+```
 Allows all inbound and outbound traffic to/from worker nodes.
 
-EKS Cluster
+**EKS Cluster**
+```
 resource "aws_eks_cluster" "capproject" {
   name     = "capproject-cluster"
   role_arn = aws_iam_role.capproject_cluster_role.arn
@@ -109,19 +125,22 @@ resource "aws_eks_cluster" "capproject" {
     security_group_ids = [aws_security_group.capproject_cluster_sg.id]
   }
 }
+```
 Creates the EKS control plane. AWS manages the master nodes; you manage worker nodes.
 
-EKS Add-on (EBS CSI Driver)
-
+**EKS Add-on (EBS CSI Driver)**
+```
 resource "aws_eks_addon" "ebs_csi_driver" {
   cluster_name    = aws_eks_cluster.capproject.name
   addon_name      = "aws-ebs-csi-driver"
   resolve_conflicts_on_create = "OVERWRITE"
   resolve_conflicts_on_update = "OVERWRITE"
 }
+```
 Installs the Amazon EBS CSI driver to allow Kubernetes to use EBS volumes for persistent storage.
 
-EKS Node Group
+**EKS Node Group**
+```
 resource "aws_eks_node_group" "capproject" {
   cluster_name    = aws_eks_cluster.capproject.name
   node_group_name = "capproject-node-group"
@@ -141,30 +160,30 @@ resource "aws_eks_node_group" "capproject" {
     source_security_group_ids = [aws_security_group.capproject_node_sg.id]
   }
 }
+```
 
 Defines three worker nodes in the cluster using EC2 instances (t2.medium). Enables SSH access using an existing key pair.
 
-🛡 IAM Roles & Policies
+**IAM Roles & Policies**
+
 Cluster Role – Grants EKS control plane the required permissions.
 
 Node Group Role – Grants worker nodes access to EKS, networking, ECR, and EBS.
 
 
-Outputs
+**Outputs**
+
 These output variables help retrieve important IDs after deployment:
 
 Cluster ID
-
 Node Group ID
-
 VPC ID
-
 Subnet IDs
 
 
-EKS Terraform Flow Diagram
-Here’s a Mermaid diagram you can paste directly into your .md file to visualize the flow:
-flowchart TD
+**EKS Terraform Flow Diagram**
+
+
     A[Start Terraform Apply] --> B[Configure AWS Provider]
     B --> C[Create VPC using VPC Module]
     C --> D[Create Public & Private Subnets]
